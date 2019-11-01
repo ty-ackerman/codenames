@@ -22,7 +22,7 @@ export default function Board() {
 			randomIndex;
 
 		// While there are elements left to shuffle...
-		while (0 != currentIndex) {
+		while (0 !== currentIndex) {
 			// Pick remaining element
 			randomIndex = Math.floor(Math.random() * currentIndex);
 			currentIndex -= 1;
@@ -35,37 +35,51 @@ export default function Board() {
 		return array.slice(0, totalNum);
 	};
 
-	const randomizeLibrary = () => {
-		// This function will take the imported library of words, split them into an array, and randomly choose the selected amount of totalCards (as per settings)
-		const libraryArray = library.split(' ');
-		// Shuffle array of cards (Fisher-Yates Shuffle) and return deck with specified num of cards
-		return shuffleArray(libraryArray, settings.totalCards);
-	};
-
-	const assignCardValues = (cardsArray) => {
-		let tempSettings = settings.cardTypes;
-		let i = 0;
-		const cardTypes = Object.keys(tempSettings);
-
-		const deck = cardsArray.map((card) => {
-			if (!tempSettings[cardTypes[i]] > 0) {
-				i++;
-			}
-			tempSettings[cardTypes[i]]--;
-			return { card, type: cardTypes[i] };
-		});
-		console.log(deck);
-	};
-
-	useEffect(
-		useCallback(() => {
-			// Randomize list of array
-			console.log(assignCardValues(randomizeLibrary()));
-			// Assign values to array
-		}),
-		[]
+	const randomizeLibrary = useCallback(
+		() => {
+			// This function will take the imported library of words, split them into an array, and randomly choose the selected amount of totalCards (as per settings)
+			const libraryArray = library.split(' ');
+			// Shuffle array of cards (Fisher-Yates Shuffle) and return deck with specified num of cards
+			return shuffleArray(libraryArray, settings.totalCards);
+		},
+		[ settings.totalCards ]
 	);
 
-	// return <div>{testArray.map((word) => <p>{word}</p>)}</div>;
-	return <div>{'hellllo'}</div>;
+	const assignCardValues = useCallback(
+		(cardsArray) => {
+			let tempSettings = settings.cardTypes;
+			let i = 0;
+			const cardTypes = Object.keys(tempSettings);
+
+			const deck = cardsArray.map((card) => {
+				if (!tempSettings[cardTypes[i]] > 0) {
+					i++;
+				}
+				tempSettings[cardTypes[i]]--;
+				return { card, type: cardTypes[i], picked: false };
+			});
+			return deck;
+		},
+		[ settings.cardTypes ]
+	);
+
+	useEffect(
+		() => {
+			const deck = assignCardValues(randomizeLibrary());
+			setActiveCards(shuffleArray(deck));
+		},
+		[ assignCardValues, randomizeLibrary ]
+	);
+
+	useEffect(
+		() => {
+			// This use effect will post to backend once the activeCards have been set + return a hash
+			activeCards.length && console.log(activeCards);
+		},
+		[ activeCards ]
+	);
+
+	if (activeCards) {
+		return <div>{activeCards.map((card) => <li>{card.type}</li>)}</div>;
+	}
 }
