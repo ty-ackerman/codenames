@@ -9,6 +9,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use('/healthcheck', require('./routes/index').router);
+app.use('/games', require('./routes/games'));
 
 //The routes we will be using - see for routes for an example
 //app.use("/tests", require("./routes/tests"))

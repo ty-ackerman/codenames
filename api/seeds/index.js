@@ -1,17 +1,17 @@
 //Import all models
-const { Test } = require('../models/Test');
+const Game = require('../models/game');
 
 //import created seeds
-const tests = require('./tests');
+const game = require('./games');
 
 const mongoose = require('mongoose');
 
 //db-name should match that in constants.js
-const uri = 'mongodb://localhost:27017/db-name';
+const uri = 'mongodb://localhost:27017/codenames';
 
 //Deletes existing seeds
 const truncateDatabase = async () => {
-	return Promise.all([ Test.deleteMany() ]);
+	return Promise.all([ Game.deleteMany() ]);
 };
 
 //
@@ -20,10 +20,10 @@ const makeSeeds = async () => {
 	await mongoose.connect(uri);
 	//clear db
 	await truncateDatabase();
-	//iterate through array of tests and save
+	//iterate through array of games and save
 	// await Promise.all(tests.map(user => tests.save()));
-	//this is commented out, but if you just have on seed to save (no array) use this
-	await tests.save();
+	//this is commented out, but if you just have one seed to save (no array) use this
+	await game.save();
 	//disconnect from db
 	mongoose.connection.close();
 };
