@@ -39,8 +39,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Setup() {
-	const [ teamSettings, setTeamSettings ] = useState({ teamOne: { members: [] }, teamTwo: { members: [] } });
-	const [ value, setValue ] = React.useState(0);
+	const [ teamSettings, setTeamSettings ] = useState({ teamOne: { members: [], name:"Team One" }, teamTwo: { members: [], name:"Team Two" } });
+	const [ value, setValue ] = useState(0);
+	const [ formStatus, setFormStatus ] = useState(false);
 	const theme = useTheme();
 	const classes = useStyles();
 
@@ -57,7 +58,8 @@ export default function Setup() {
 	};
 
 	const handleTeamSettingChange = (e, team, index) => {
-		const currentTeam = teamSettings[team];
+		let teamSettingState = teamSettings
+		const currentTeam = teamSettingState[team];
 		const settingChange = e.target.name;
 
 		if (settingChange === 'member') {
@@ -65,15 +67,35 @@ export default function Setup() {
 		} else {
 			currentTeam[e.target.name] = e.target.value;
 		}
-		setTeamSettings({ ...teamSettings, currentTeam });
+
+		teamSettingState[team] = currentTeam;
+		setTeamSettings({ ...teamSettingState });
+
+		setFormStatus(isSetupComplete(teamSettingState));
 	};
+
+	const isSetupComplete = (settings ) => {
+		const filteredSettings = Object.keys(settings).filter(teamName => {
+			const team = settings[teamName];
+			if (team.name && team.members.length > 1) {
+				const filteredTeam = team.members.filter(member => {
+					return member.length
+				})
+				return filteredTeam.length === team.members.length ;
+			}
+		})
+
+		return filteredSettings.length === Object.keys(settings).length ? true : false;
+	}
 
 	return (
 		<div>
 			<Paper position="static">
 				<Tabs value={value} onChange={handleChange} centered>
-					<Tab label="Team One" />
-					<Tab label="Team Two" />
+					{Object.keys(teamSettings).map((team, key) => {
+						return <Tab key={key} label={teamSettings[team].name ?  teamSettings[team].name : `Team ${key + 1}`}/>
+					})}
+
 				</Tabs>
 			</Paper>
 			<SwipeableViews
@@ -123,7 +145,7 @@ export default function Setup() {
 					);
 				})}
 			</SwipeableViews>
-			<Button variant="contained" className={classes.button} color="primary" disabled>
+			<Button variant="contained" className={classes.button} color="secondary" disabled={!formStatus}>
 				Start
 			</Button>
 		</div>
