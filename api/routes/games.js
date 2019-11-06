@@ -16,7 +16,6 @@ router.get('/', async (req, res, next) => {
 
 router.get('/:game_id', async (req, res, next) => {
 	try {
-		console.log('sdfsfsdfsdfsdfsdfsfsdfsdfsdf');
 		const { game_id } = req.params;
 		const doc = await Game.findById(game_id);
 		res.status(200).send({

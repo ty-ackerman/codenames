@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-export default function Setup() {
+export default function Setup(props) {
 	const [ teamSettings, setTeamSettings ] = useState({
 		teamOne: { members: [ '', '' ], name: 'Team One' },
 		teamTwo: { members: [ '', '' ], name: 'Team Two' }
@@ -81,7 +81,6 @@ export default function Setup() {
 
 		setFormStatus(isSetupComplete(teamSettingState));
 
-		console.log(teamSettings);
 		renderTeamMembers(teamSettings[team].members, team);
 	};
 
@@ -116,13 +115,15 @@ export default function Setup() {
 		});
 	};
 
-	const changeTeamMembers = (action, team, index) => {
+	const changeTeamMembers = (action, team) => {
 		const tempTeamSettings = teamSettings;
 		const currentTeam = tempTeamSettings[team].members;
-		action === 'add' ? currentTeam.push('') : currentTeam.splice(index, 1);
+		action === 'add' ? currentTeam.push('') : currentTeam.splice(currentTeam.length - 1, 1);
 		tempTeamSettings[team].members = currentTeam;
 		setTeamSettings(tempTeamSettings);
 		forceUpdate();
+		console.log(teamSettings);
+		setFormStatus(isSetupComplete(teamSettings));
 	};
 
 	return (
@@ -163,7 +164,7 @@ export default function Setup() {
 									<div>
 										{teamSettings[team].members.length > 2 && (
 											<Button
-												onClick={() => changeTeamMembers('delete', team, key)}
+												onClick={() => changeTeamMembers('delete', team)}
 												startIcon={<DeleteForeverIcon />}
 											>
 												Remove Player
@@ -183,7 +184,15 @@ export default function Setup() {
 					);
 				})}
 			</SwipeableViews>
-			<Button variant="contained" className={classes.button} color="secondary" disabled={!formStatus}>
+			<Button
+				variant="contained"
+				className={classes.button}
+				color="secondary"
+				disabled={!formStatus}
+				onClick={() => {
+					props.handleCompleteForm(teamSettings);
+				}}
+			>
 				Start
 			</Button>
 		</div>
