@@ -71,7 +71,6 @@ function App(props) {
 
 	useEffect(
 		() => {
-			console.log(props.history);
 			const deck = assignCardValues(randomizeLibrary());
 			setActiveCards(shuffleArray(deck));
 		},

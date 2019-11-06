@@ -122,7 +122,6 @@ export default function Setup(props) {
 		tempTeamSettings[team].members = currentTeam;
 		setTeamSettings(tempTeamSettings);
 		forceUpdate();
-		console.log(teamSettings);
 		setFormStatus(isSetupComplete(teamSettings));
 	};
 
