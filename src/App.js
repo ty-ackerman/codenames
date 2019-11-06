@@ -2,9 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
 import axios from 'axios';
 import library from './constants/library';
-import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
-import { navigate } from 'hookrouter';
-
+import { Route, Switch } from 'react-router-dom';
+import { useHistory } from "react-router-dom";
 import Board from './components/Board';
 import Setup from './components/Setup';
 
@@ -18,6 +17,8 @@ function App(props) {
 			death: 1
 		}
 	});
+
+	let history = useHistory();
 
 	const [ activeCards, setActiveCards ] = useState([]);
 	const shuffleArray = (array, totalNum) => {
@@ -82,19 +83,18 @@ function App(props) {
 		setActiveCards(shuffleArray(deck));
 
 		const res = await axios.post('/games/add', { teams, activeCards });
-		navigate(`/game/${res.data.data._id}`);
+
+		await history.push(`/game/${res.data.data._id}`);
 	};
 
 	return (
 		<div className="App">
-			<Router>
-				<div>
-					<Switch>
-						<Route path="/game/*" component={Board} />
-						<Route exact path="/" render={() => <Setup handleCompleteForm={handleCompleteForm} />} />
-					</Switch>
-				</div>
-			</Router>
+			<div>
+				<Switch>
+					<Route path="/game/*" component={Board} />
+					<Route exact path="/" render={() => <Setup handleCompleteForm={handleCompleteForm} />} />
+				</Switch>
+			</div>
 		</div>
 	);
 }
