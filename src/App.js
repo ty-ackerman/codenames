@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
 import axios from 'axios';
-import library from './constants/library';
+import library from './constants/library-official';
 import { Route, Switch } from 'react-router-dom';
-import { useHistory } from "react-router-dom";
+import { useHistory } from 'react-router-dom';
 import Board from './components/Board';
 import Setup from './components/Setup';
 
@@ -73,6 +73,15 @@ function App(props) {
 		() => {
 			const deck = assignCardValues(randomizeLibrary());
 			setActiveCards(shuffleArray(deck));
+			setRules({
+				totalCards: rules.totalCards,
+				cardTypes: {
+					teamOne: 9,
+					teamTwo: 8,
+					neutral: 7,
+					death: 1
+				}
+			});
 		},
 		[ assignCardValues, randomizeLibrary ]
 	);
