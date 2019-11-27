@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Input, Container, Paper, Tabs, Tab, Typography, Box, TextField, Button } from '@material-ui/core';
+import { Container, Paper, Tabs, Tab, Typography, Box, TextField, Button } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
@@ -47,7 +47,7 @@ export default function Setup(props) {
 	});
 	const [ value, setValue ] = useState(0);
 	const [ , updateState ] = useState();
-	const [ formStatus, setFormStatus ] = useState(false);
+	const [ formStatus, setFormStatus ] = useState(true); //CHANGE BACK
 	const theme = useTheme();
 	const classes = useStyles();
 
@@ -61,9 +61,9 @@ export default function Setup(props) {
 		setValue(index);
 	};
 
-	const doesPropertyExist = (object, property) => {
-		return object[property] ? object[property] : '';
-	};
+	// const doesPropertyExist = (object, property) => {
+	// 	return object[property] ? object[property] : '';
+	// };
 
 	const handleTeamSettingChange = (e, team, index) => {
 		let teamSettingState = teamSettings;
@@ -108,6 +108,7 @@ export default function Setup(props) {
 						margin="normal"
 						name="member"
 						key={key}
+						defaultValue={`${team} - Member ${key + 1}`}
 						onChange={(e) => handleTeamSettingChange(e, team, key)}
 					/>
 				</div>
@@ -156,6 +157,7 @@ export default function Setup(props) {
 											label="Team Name"
 											margin="normal"
 											name="name"
+											defaultValue={team}
 											onChange={(e) => handleTeamSettingChange(e, team)}
 										/>
 									</div>

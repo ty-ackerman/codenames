@@ -11,12 +11,14 @@ function App(props) {
 	const [ rules, setRules ] = useState({
 		totalCards: 25,
 		cardTypes: {
-			teamOne: 9,
+			teamOne: 8,
 			teamTwo: 8,
 			neutral: 7,
 			death: 1
 		}
 	});
+
+	const [turn, setTurn ] = useState({teamOne: false, teamTwo: false})
 
 	let history = useHistory();
 
@@ -50,14 +52,32 @@ function App(props) {
 		},
 		[ rules.totalCards ]
 	);
+	
+	const assignExtraCard = useCallback(
+		(tempRules) => {
+			if (Math.random() >= 0.5) {
+				tempRules.teamOne++
+				setTurn(() => ({ teamOne: true, teamTwo: false}))
+			}
+			else {
+				tempRules.teamTwo++;
+				setTurn(() => ({teamOne: false, teamTwo: true}))
+			
+			}
+			return tempRules;
+		}, []
+	)
 
 	const assignCardValues = useCallback(
 		(cardsArray) => {
-			let tempRules = rules.cardTypes;
+			let tempRules = {...rules.cardTypes};
+			tempRules = assignExtraCard(tempRules)
+			console.log(tempRules)
 			let i = 0;
 			const cardTypes = Object.keys(tempRules);
 
 			const deck = cardsArray.map((card) => {
+				// console.log(tempRules)
 				if (!tempRules[cardTypes[i]] > 0) {
 					i++;
 				}
@@ -66,31 +86,14 @@ function App(props) {
 			});
 			return deck;
 		},
-		[ rules.cardTypes ]
-	);
-
-	useEffect(
-		() => {
-			const deck = assignCardValues(randomizeLibrary());
-			setActiveCards(shuffleArray(deck));
-			setRules({
-				totalCards: rules.totalCards,
-				cardTypes: {
-					teamOne: 9,
-					teamTwo: 8,
-					neutral: 7,
-					death: 1
-				}
-			});
-		},
-		[ assignCardValues, randomizeLibrary ]
+		[ assignExtraCard, rules ]
 	);
 
 	const handleCompleteForm = async (teams) => {
 		const deck = assignCardValues(randomizeLibrary());
 		setActiveCards(shuffleArray(deck));
 
-		const res = await axios.post('/games/add', { teams, activeCards });
+		const res = await axios.post('/games/add', { teams, activeCards: deck });
 
 		await history.push(`/game/${res.data.data._id}`);
 	};

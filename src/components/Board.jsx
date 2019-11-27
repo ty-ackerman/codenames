@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Container } from '@material-ui/core';
 import Card from './Card';
@@ -6,7 +6,7 @@ import Card from './Card';
 export default function Board(props) {
 	const [ loading, setLoading ] = useState(true);
 	const [ activeCards, setActiveCards ] = useState([]);
-	const [ teams, setTeams ] = useState({});
+	const [ , setTeams ] = useState({});
 
 	const hash = props.match.params[0];
 
