@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Container } from '@material-ui/core';
+import { Container, Paper } from '@material-ui/core';
 import Card from './Card';
+import Header from './Header';
+
+
 
 export default function Board(props) {
 	const [ loading, setLoading ] = useState(true);
@@ -26,11 +29,14 @@ export default function Board(props) {
 
 	if (!loading) {
 		return (
+			<>
+			<Header/>
 			<Container className="table">
 				{activeCards.map((card, key) => {
 					return <Card key={key} card={card} />;
 				})}
 			</Container>
+			</>
 		);
 	}
 	return <div>No Boardgame</div>;
