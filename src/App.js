@@ -18,7 +18,7 @@ function App(props) {
 		}
 	});
 
-	const [turn, setTurn ] = useState({teamOne: false, teamTwo: false})
+	const [ turn, setTurn ] = useState({ teamOne: false, teamTwo: false });
 
 	let history = useHistory();
 
@@ -52,27 +52,22 @@ function App(props) {
 		},
 		[ rules.totalCards ]
 	);
-	
-	const assignExtraCard = useCallback(
-		(tempRules) => {
-			if (Math.random() >= 0.5) {
-				tempRules.teamOne++
-				setTurn(() => ({ teamOne: true, teamTwo: false}))
-			}
-			else {
-				tempRules.teamTwo++;
-				setTurn(() => ({teamOne: false, teamTwo: true}))
-			
-			}
-			return tempRules;
-		}, []
-	)
+
+	const assignExtraCard = useCallback((tempRules) => {
+		if (Math.random() >= 0.5) {
+			tempRules.teamOne++;
+			setTurn(() => ({ teamOne: true, teamTwo: false }));
+		} else {
+			tempRules.teamTwo++;
+			setTurn(() => ({ teamOne: false, teamTwo: true }));
+		}
+		return tempRules;
+	}, []);
 
 	const assignCardValues = useCallback(
 		(cardsArray) => {
-			let tempRules = {...rules.cardTypes};
-			tempRules = assignExtraCard(tempRules)
-			console.log(tempRules)
+			let tempRules = { ...rules.cardTypes };
+			tempRules = assignExtraCard(tempRules);
 			let i = 0;
 			const cardTypes = Object.keys(tempRules);
 
