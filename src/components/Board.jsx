@@ -10,6 +10,7 @@ export default function Board(props) {
 	const [ activeCards, setActiveCards ] = useState([]);
 	const [ teams, setTeams ] = useState({});
 	const [ noCaptain, setNoCaptain ] = useState([]);
+	const [ processCompleted, setProcessCompleted ] = useState(true);
 
 	const hash = props.match.params[0];
 
@@ -18,6 +19,7 @@ export default function Board(props) {
 		setActiveCards(activeCards);
 		setTeams(teams);
 		setLoading(false);
+		setProcessCompleted(false);
 		getTeamCaptains(teams);
 	}, []);
 
@@ -28,6 +30,15 @@ export default function Board(props) {
 		[ hash, getCurrentGame ]
 	);
 
+	useEffect(
+		() => {
+			if (noCaptain.length) {
+				setProcessCompleted(false);
+			}
+		},
+		[ noCaptain ]
+	);
+
 	const getTeamCaptains = (teams) => {
 		// will filter through list of teams
 		// if teams do not have a captain, they will be put into the array
@@ -35,14 +46,34 @@ export default function Board(props) {
 		const needsCaptain = teamNames.filter((teamName) => {
 			return !teams[teamName].captain;
 		});
-		setNoCaptain([ needsCaptain ]);
+		setNoCaptain([ ...needsCaptain ]);
 	};
 
+	// if (!loading && !processCompleted && noCaptain.length > 0)
+	// 	return (
+	// 		<Modal
+	// 			setLoading={setLoading}
+	// 			setNoCaptain={setNoCaptain}
+	// 			noCaptain={noCaptain}
+	// 			teams={teams}
+	// 			setProcessCompleted={setProcessCompleted}
+	// 		/>
+	// 	);
 	if (!loading) {
 		return (
 			<React.Fragment>
+				{!loading &&
+				!processCompleted &&
+				noCaptain.length > 0 && (
+					<Modal
+						setLoading={setLoading}
+						setNoCaptain={setNoCaptain}
+						noCaptain={noCaptain}
+						teams={teams}
+						setProcessCompleted={setProcessCompleted}
+					/>
+				)}
 				<Header />
-				{noCaptain.length > 0 && <Modal setNoCaptain={setNoCaptain} noCaptain={noCaptain} />}
 				<Container className="table">
 					{activeCards.map((card, key) => {
 						return <Card key={key} card={card} />;

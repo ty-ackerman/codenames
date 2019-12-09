@@ -211,7 +211,7 @@ input::-moz-focus-inner {
 	transform: scale(1.01);
 }
 
-.neutral {
+/* .neutral {
 	background-color: rgb(255, 255, 210);
 }
 
@@ -228,7 +228,7 @@ input::-moz-focus-inner {
 .death {
 	color: white;
 	background-color: black;
-}
+} */
 
 .table {
 	display: flex;
